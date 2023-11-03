@@ -11,6 +11,7 @@
 
 <body>
     @include('includes.nav')
+    <br>
     <div class="container">
         @yield('content')
     </div>

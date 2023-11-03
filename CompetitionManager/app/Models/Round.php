@@ -8,4 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class Round extends Model
 {
     use HasFactory;
+    protected $table = 'rounds';
+    public $primaryKey = 'id';
+    public $foreignKey = 'competition_id';
+    public $timestamps = true;
 }

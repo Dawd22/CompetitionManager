@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Competition;
+use App\Models\Round;
 class CompetitionsController extends Controller
 {
     /**
@@ -36,8 +37,10 @@ class CompetitionsController extends Controller
      */
     public function show(string $id)
     {
-        //
-    }
+        $competition = Competition::Find($id);
+        $rounds = Round::where('competition_id', $id)->get();
+        return view('competitions.show')->with(['competition' => $competition, 'rounds' => $rounds]);
+    }   
 
     /**
      * Show the form for editing the specified resource.

@@ -1,11 +1,16 @@
 @extends('layouts.app')
 
 @section('content')
-    <h1>Competitions</h1>
+    <div class="text-center">
+        <h1>Competitions</h1>
+    </div>
     @if (count($competitions) > 0)
         @foreach ($competitions as $competition)
             <div class="card">
-                <h2>{{ $competition->name }}</h2>
+                <div class="card-body">
+                    <h4><a href='/competition/{{$competition->id}}'>{{ $competition->name }}</a></h4>
+                    <h6>{{ $competition->year }}</h6>
+                </div>
             </div>
         @endforeach
     @else
