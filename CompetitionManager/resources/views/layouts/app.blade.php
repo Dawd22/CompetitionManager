@@ -9,7 +9,7 @@
     <title>{{ config('app.name', 'Cp Manager') }}</title>
 </head>
 
-<body>
+<body style="font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif">
     @include('includes.nav')
     <br>
     <div class="container">

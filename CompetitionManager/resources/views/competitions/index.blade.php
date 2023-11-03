@@ -8,10 +8,12 @@
         @foreach ($competitions as $competition)
             <div class="card">
                 <div class="card-body">
-                    <h4><a href='/competition/{{$competition->id}}'>{{ $competition->name }}</a></h4>
+                    <h4><a href='/competition/{{ $competition->id }}'>{{ $competition->name }}</a></h4>
                     <h6>{{ $competition->year }}</h6>
+                    <small> <i> {{ $competition->description }}</i></small>
                 </div>
             </div>
+            <br>
         @endforeach
     @else
         <p>No competitions found</p>
