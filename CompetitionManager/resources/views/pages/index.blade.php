@@ -1,12 +1,8 @@
-<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>{{config('app.name', 'Cp Manager')}}</title>
-    </head>
-    <body>
+@extends('layouts.app')
+
+@section('content')
+    <div class="text-center">
         <h1>Welcome To this page</h1>
         <p>This is my first "Laravel" webpage</p>
-    </body>
-</html>
+    </div>
+@endsection
