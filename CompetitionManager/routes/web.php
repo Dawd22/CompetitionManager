@@ -16,6 +16,5 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('pages.index');
 });
-Route::get('/competitions', function () {
-    return view('pages.competitions');
-});
+
+Route::resource('competition','App\Http\Controllers\CompetitionsController');

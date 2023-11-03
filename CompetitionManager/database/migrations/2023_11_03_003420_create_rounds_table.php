@@ -15,8 +15,11 @@ return new class extends Migration
             $table->charset = 'utf8';
             $table->collation = 'utf8_unicode_ci';
             $table->id();
-            $table->unsignedBigInteger('competition_id');
+            $table->foreignId('competition_id')->constrained('competitions');
             $table->string('round_name');
+            $table->string('location');
+            $table->date('beginning');
+            $table->date('end');
             $table->timestamps();
         });
     }

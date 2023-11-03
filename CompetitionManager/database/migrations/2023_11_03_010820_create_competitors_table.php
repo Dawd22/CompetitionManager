@@ -12,8 +12,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('competitors', function (Blueprint $table) {
-            $table->string('user_id');
-            $table->unsignedBigInteger('round_id');
+            $table->charset = 'utf8';
+            $table->collation = 'utf8_unicode_ci';
+            $table->foreignId('user_id')->constrained('users');
+            $table->foreignId('round_id')->constrained('rounds');
+            $table->timestamps();
         });
     }
 
