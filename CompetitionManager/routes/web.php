@@ -14,7 +14,9 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
+    return view('competitions.create');
+});
+Route::get('/index', function () {
     return view('pages.index');
 });
-
 Route::resource('competition','App\Http\Controllers\CompetitionsController');

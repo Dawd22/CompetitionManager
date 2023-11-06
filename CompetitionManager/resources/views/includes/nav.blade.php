@@ -1,6 +1,6 @@
 <nav class="navbar navbar-expand-lg bg-dark">
     <div class="container-fluid">
-        <a class="navbar-brand" href="/">CP</a>
+        <a class="navbar-brand" href="/index">CP</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
             data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
             aria-label="Toggle navigation">
@@ -11,7 +11,10 @@
                 <li class="nav-item">
                     <a class="nav-link text-light" aria-current="page" href="/competition">Competitions</a>
                 </li>
-            </ul>
+                <li class="nav-item">
+                    <a class="nav-link text-light" aria-current="page" href="/">Create</a>
+                </li>
+            </ul>  
         </div>
     </div>
 </nav>

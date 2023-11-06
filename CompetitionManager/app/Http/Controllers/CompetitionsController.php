@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Competition;
 use App\Models\Round;
+use Illuminate\Support\Facades\Validator;
 class CompetitionsController extends Controller
 {
     /**
@@ -21,7 +22,7 @@ class CompetitionsController extends Controller
      */
     public function create()
     {
-        //
+        return view('competitions.create');
     }
 
     /**
@@ -29,7 +30,26 @@ class CompetitionsController extends Controller
      */
     public function store(Request $request)
     {
-        //
+
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string',
+            'year' => 'required',
+            'description' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator);
+        }
+
+        $competition = new Competition;
+        $competition->name = $request->input('name');
+        $competition->year = $request->input('year');
+        $competition->description = $request->input('description');
+        $competition->save();
+
+        // ...
+
+        return redirect()->route('competition.index')->with('success', 'A formátum sikeresen elküldve!');
     }
 
     /**
