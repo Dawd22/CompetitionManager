@@ -20,3 +20,4 @@ Route::get('/index', function () {
     return view('pages.index');
 });
 Route::resource('competition','App\Http\Controllers\CompetitionsController');
+Route::resource('round','App\Http\Controllers\RoundsController');

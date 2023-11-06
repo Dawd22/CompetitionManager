@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+use App\Models\Round;
 
 class RoundsController extends Controller
 {
@@ -27,7 +29,27 @@ class RoundsController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'title' => 'required|string',
+            'beginning' => 'required',
+            'end' => 'required',
+            'location' => 'required',
+            'competition_id' => 'required'
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator);
+        }
+
+        $round = new Round;
+        $round->round_name = $request->input('title');
+        $round->beginning = $request->input('beginning');
+        $round->end = $request->input('end');
+        $round->location = $request->input('location');
+        $round->competition_id = $request->input('competition_id');
+        $round->save();
+
+        return redirect()->back();
     }
 
     /**
