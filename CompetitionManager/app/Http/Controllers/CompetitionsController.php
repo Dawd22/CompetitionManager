@@ -67,7 +67,7 @@ class CompetitionsController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        
     }
 
     /**
@@ -75,7 +75,23 @@ class CompetitionsController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string',
+            'year' => 'required',
+            'description' => 'required',
+        ]);
+        $competition = Competition::find($id);
+
+        if (!$competition) {
+            return response()->json(['message' => 'Verseny nem található'], 404);
+        }
+        
+        $competition->name = $request->input('name');
+        $competition->description = $request->input('description');
+        $competition->year = $request->input('year');
+        $competition->save();
+        return response()->json(['message' => 'Sikeres mentés', 'data' => $competition]);
+    
     }
 
     /**
