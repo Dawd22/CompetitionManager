@@ -12,9 +12,8 @@
                         <h4><a href='/competition/{{ $competition->id }}'>{{ $competition->name }}</a></h4>
                         <h6>{{ $competition->year }}</h6>
                         <small> <i> {{ $competition->description }}</i></small>
-                        <div class="d-flex justify-content-between" >
-                            <button class="btn btn-primary "
-                                onclick="showForm('{{ $competition->id }}')">Edit</button>
+                        <div class="d-flex justify-content-between">
+                            <button class="btn btn-primary " onclick="showForm('{{ $competition->id }}')">Edit</button>
                             <button class="btn btn-danger "
                                 onclick="DeleteCompetition('{{ $competition->id }}')">Delete</button>
                         </div>
@@ -77,21 +76,22 @@
         });
     }
 
-    function DeleteCompetition(competitionId){
+    function DeleteCompetition(competitionId) {
         event.preventDefault();
         $.ajax({
-        type: 'DELETE',
-        url: '/competition/' + competitionId,
-        async: true,
-        headers: {
-            'X-CSRF-TOKEN': '{{ csrf_token() }}',
-        },
-        success: function (data) {
-        },
-        error: function (xhr, status, error) {
-            console.log(xhr.responseText,status,error);
-
-        }
-    });
+            type: 'DELETE',
+            url: '/competition/' + competitionId,
+            async: true,
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+            },
+            success: function(data) {
+                var element = document.getElementById('competition' + competitionId);
+                element.parentElement.parentElement.remove();
+            },
+            error: function(xhr, status, error) {
+                console.log(xhr.responseText, status, error);
+            }
+        });
     }
 </script>
