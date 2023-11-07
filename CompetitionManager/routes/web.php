@@ -1,7 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\RoundsController;
+use App\Http\Controllers\CompetitionsController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -19,5 +20,5 @@ Route::get('/', function () {
 Route::get('/index', function () {
     return view('pages.index');
 });
-Route::resource('competition','App\Http\Controllers\CompetitionsController');
-Route::resource('round','App\Http\Controllers\RoundsController');
+Route::resource('competition',CompetitionsController::class);
+Route::resource('round',RoundsController::class);
