@@ -12,8 +12,12 @@
                         <h4><a href='/competition/{{ $competition->id }}'>{{ $competition->name }}</a></h4>
                         <h6>{{ $competition->year }}</h6>
                         <small> <i> {{ $competition->description }}</i></small>
-                        <button class="btn btn-primary d-block mx-auto"
-                            onclick="showForm('{{ $competition->id }}')">Edit</button>
+                        <div class="d-flex justify-content-between" >
+                            <button class="btn btn-primary "
+                                onclick="showForm('{{ $competition->id }}')">Edit</button>
+                            <button class="btn btn-danger "
+                                onclick="DeleteCompetition('{{ $competition->id }}')">Delete</button>
+                        </div>
                     </div>
                     <form id="editCompetition{{ $competition->id }}" style="display: none">
                         @csrf
@@ -53,13 +57,14 @@
         var formData = $('#editCompetition' + competitionId).serialize();
         $.ajax({
             type: 'PUT',
-            url: '/competition/'+ competitionId,
+            url: '/competition/' + competitionId,
             data: formData,
             async: true,
             success: function(response) {
                 showForm(competitionId);
                 $('#editCompetition' + competitionId + ' input[name="name"]').val(response.data.name);
-                $('#editCompetition' + competitionId + ' input[name="description"]').val(response.data.description);
+                $('#editCompetition' + competitionId + ' input[name="description"]').val(response.data
+                    .description);
                 $('#editCompetition' + competitionId + ' input[name="year"]').val(response.data.year);
                 var competitionDiv = $('#competition' + competitionId);
                 competitionDiv.find('h4 a').text(response.data.name);
@@ -70,5 +75,23 @@
                 console.log(xhr.responseText);
             }
         });
+    }
+
+    function DeleteCompetition(competitionId){
+        event.preventDefault();
+        $.ajax({
+        type: 'DELETE',
+        url: '/competition/' + competitionId,
+        async: true,
+        headers: {
+            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+        },
+        success: function (data) {
+        },
+        error: function (xhr, status, error) {
+            console.log(xhr.responseText,status,error);
+
+        }
+    });
     }
 </script>

@@ -49,7 +49,7 @@ class CompetitionsController extends Controller
 
         // ...
 
-        return redirect()->route('competition.index')->with('success', 'A formátum sikeresen elküldve!');
+        return redirect()->route('competition.index')->with('success', 'Format sent successfully!');
     }
 
     /**
@@ -83,14 +83,14 @@ class CompetitionsController extends Controller
         $competition = Competition::find($id);
 
         if (!$competition) {
-            return response()->json(['message' => 'Verseny nem található'], 404);
+            return response()->json(['message' => 'Not found'], 404);
         }
         
         $competition->name = $request->input('name');
         $competition->description = $request->input('description');
         $competition->year = $request->input('year');
         $competition->save();
-        return response()->json(['message' => 'Sikeres mentés', 'data' => $competition]);
+        return response()->json(['message' => 'Successful save', 'data' => $competition]);
     
     }
 
@@ -99,6 +99,11 @@ class CompetitionsController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $competition = Competition::find($id);
+        if (!$competition) {
+            return response()->json(['message' => 'Not found'], 404);
+        }
+        $competition->delete();
+        return response()->json(['message' => 'Successful deletion', 'data' => $competition]);
     }
 }
