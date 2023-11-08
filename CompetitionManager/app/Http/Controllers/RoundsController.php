@@ -5,7 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Round;
-
+use App\Models\User;
+use App\Models\Competitor;
 class RoundsController extends Controller
 {
     /**
@@ -13,7 +14,7 @@ class RoundsController extends Controller
      */
     public function index()
     {
-        //
+        
     }
 
     /**
@@ -57,7 +58,15 @@ class RoundsController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $competitors = Competitor::where('round_id','=',$id)->get();
+        $round = Round::Find($id);
+        $users = [];
+        foreach ($competitors as $competitor) {
+            $user = User::find($competitor->user_id);
+            if($user != null){
+            array_push($users, $user);}
+        }
+        return view('rounds.competitors')->with(['competitors' => $competitors, 'round' => $round,'users' => $users]);
     }
 
     /**

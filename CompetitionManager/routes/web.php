@@ -3,6 +3,8 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RoundsController;
 use App\Http\Controllers\CompetitionsController;
+use App\Http\Controllers\CompetitorsController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -22,3 +24,4 @@ Route::get('/index', function () {
 });
 Route::resource('competition',CompetitionsController::class);
 Route::resource('round',RoundsController::class);
+Route::resource('competitor',CompetitorsController::class);
