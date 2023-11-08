@@ -73,7 +73,25 @@ class RoundsController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'round_name' => 'required',
+            'beginning' => 'required',
+            'end' => 'required',
+            'location' => 'required',
+            
+        ]);
+        $round = Round::find($id);
+
+        if (!$round) {
+            return response()->json(['message' => 'Not found'], 404);
+        }
+        
+        $round->round_name = $request->input('round_name');
+        $round->beginning = $request->input('beginning');
+        $round->end = $request->input('end');
+        $round->location = $request->input('location');
+        $round->save();
+        return response()->json(['message' => 'Successful save', 'data' => $round]);
     }
 
     /**
@@ -81,6 +99,11 @@ class RoundsController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $round = Round::find($id);
+        if (!$round) {
+            return response()->json(['message' => 'Not found'], 404);
+        }
+        $round->delete();
+        return response()->json(['message' => 'Successful deletion', 'data' => $round]);
     }
 }

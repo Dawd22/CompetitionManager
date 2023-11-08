@@ -38,6 +38,7 @@
         <p>No competitions found</p>
     @endif
 @endsection
+
 <script type="text/javascript">
     function showForm(competitionId) {
         var competition = document.getElementById(`competition${competitionId}`);
