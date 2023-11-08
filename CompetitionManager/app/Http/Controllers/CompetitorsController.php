@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\Validator;
 use App\Models\User;
 use App\Models\Competitor;
 use App\Models\Round;
+use Illuminate\Support\Facades\DB;
+
 class CompetitorsController extends Controller
 {
     /**
@@ -95,8 +97,25 @@ class CompetitorsController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Request $request)
     {
         //
+    }
+
+    public function __invoke(Request $request)
+    {
+        $user_id = $request->input('user_id');
+        $round_id = $request->input('round_id');
+    
+        try {
+            DB::table('competitors')
+                ->where('user_id', $user_id)
+                ->where('round_id', $round_id)
+                ->delete();
+            
+            return response()->json(['message' => 'Successful deletion']);
+        } catch (Exception $e) {
+            return response()->json(['message' => 'Error during deletion'], 500);
+        }
     }
 }

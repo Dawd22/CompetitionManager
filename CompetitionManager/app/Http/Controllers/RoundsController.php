@@ -66,6 +66,7 @@ class RoundsController extends Controller
             if($user != null){
             array_push($users, $user);}
         }
+        
         return view('rounds.competitors')->with(['competitors' => $competitors, 'round' => $round,'users' => $users]);
     }
 

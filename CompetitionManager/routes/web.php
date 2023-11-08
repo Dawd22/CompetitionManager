@@ -22,6 +22,7 @@ Route::get('/', function () {
 Route::get('/index', function () {
     return view('pages.index');
 });
+Route::delete('/competitor',CompetitorsController::class);
 Route::resource('competition',CompetitionsController::class);
 Route::resource('round',RoundsController::class);
 Route::resource('competitor',CompetitorsController::class);

@@ -34,6 +34,7 @@
             </div>
             <br>
         @endforeach
+        {{$competitions->links('pagination::bootstrap-4')}}
     @else
         <p>No competitions found</p>
     @endif
