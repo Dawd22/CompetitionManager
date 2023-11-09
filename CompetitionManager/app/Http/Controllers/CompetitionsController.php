@@ -30,26 +30,31 @@ class CompetitionsController extends Controller
      */
     public function store(Request $request)
     {
-
         $validator = Validator::make($request->all(), [
             'name' => 'required|string',
             'year' => 'required',
-            'description' => 'required',
+            'description' => 'required|string',
         ]);
 
         if ($validator->fails()) {
-            return redirect()->back()->withErrors($validator);
+            return response()->json(['message' => 'Something went wrong']);
         }
 
-        $competition = new Competition;
-        $competition->name = $request->input('name');
-        $competition->year = $request->input('year');
-        $competition->description = $request->input('description');
-        $competition->save();
+        if(Competition::where(['name'=> $request->input('name'), 'year'=> $request->input('year')])->get()->isEmpty()){
+            $competition = new Competition;
+            $competition->year = $request->input('year');
 
-        // ...
+            if($competition->year >= intval(date("Y")) && $competition->year <= 2040){
+            $competition->name = $request->input('name');
+                $competition->description = $request->input('description');
+                $competition->save();
+                return response()->json(['message' => 'Successful save', 'data' => $competition]);
+                }
 
-        return redirect()->route('competition.index')->with('success', 'Format sent successfully!');
+            return response()->json(['message' => 'Wrong year']);
+        }
+
+        return response()->json(['message' => 'It is already exist']);
     }
 
     /**

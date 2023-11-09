@@ -5,7 +5,7 @@
         <h1>Create Competitions</h1>
     </div>
     <div class="container">
-        <form action="{{ route('competition.store') }}" method="post" class="form">
+        <form class="form" id="addCompetition">
             @csrf
             <div class="form-group">
                 <label for="name">Name of the event</label>
@@ -19,7 +19,26 @@
                 <label for="description">Description</label>
                 <textarea name="description" placeholder="Description" class="form-control"></textarea>
             </div>
-            <button type="submit" class="btn btn-primary d-block mx-auto">Create event</button>
+            <button class="btn btn-primary d-block mx-auto" onclick="saveCompetition()">Create event</button>
         </form>
     </div>
 @endsection
+
+<script>
+    function saveCompetition() {
+        event.preventDefault();
+        var formData = $('#addCompetition').serialize();
+        $.ajax({
+            type: 'POST',
+            url: '/competition',
+            data: formData,
+            async: true,
+            success: function(response) {
+                alert(response.message);
+            },
+            error: function(xhr) {
+                console.log(xhr.responseText);
+            }
+        });
+    }
+</script>

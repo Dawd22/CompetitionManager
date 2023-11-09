@@ -115,7 +115,7 @@ class CompetitorsController extends Controller
             
             return response()->json(['message' => 'Successful deletion']);
         } catch (Exception $e) {
-            return response()->json(['message' => 'Error during deletion'], 500);
+            return response()->json(['message' => 'Error during deletion'], 404);
         }
     }
 }
