@@ -63,6 +63,8 @@
             async: true,
             success: function(response) {
                 showForm(competitionId);
+                alert(response.message);
+                if(response.message == "Successful save"){
                 $('#editCompetition' + competitionId + ' input[name="name"]').val(response.data.name);
                 $('#editCompetition' + competitionId + ' input[name="description"]').val(response.data
                     .description);
@@ -70,8 +72,7 @@
                 var competitionDiv = $('#competition' + competitionId);
                 competitionDiv.find('h4 a').text(response.data.name);
                 competitionDiv.find('h6').text(response.data.year);
-                competitionDiv.find('small i').text(response.data.description);
-                alert(response.message);
+                competitionDiv.find('small i').text(response.data.description);}
 
             },
             error: function(xhr) {

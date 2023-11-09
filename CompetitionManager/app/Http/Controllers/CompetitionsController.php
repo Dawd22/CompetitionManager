@@ -72,7 +72,7 @@ class CompetitionsController extends Controller
      */
     public function edit(string $id)
     {
-        
+        //
     }
 
     /**
@@ -88,15 +88,28 @@ class CompetitionsController extends Controller
         $competition = Competition::find($id);
 
         if (!$competition) {
-            return response()->json(['message' => 'Not found'], 404);
+            return response()->json(['message' => 'Not found']);
         }
-        
-        $competition->name = $request->input('name');
-        $competition->description = $request->input('description');
-        $competition->year = $request->input('year');
-        $competition->save();
-        return response()->json(['message' => 'Successful save', 'data' => $competition]);
-    
+
+        if($competition->name == $request->input('name') && $competition->year == $request->input('year'))
+        {
+            $competition->description = $request->input('description');
+            $competition->save();
+            return response()->json(['message' => 'Successful save', 'data' => $competition]);
+        }
+
+        else if(Competition::where(['name'=> $request->input('name'), 'year' => $request->input('year')])->get()->isEmpty()){
+            if( $request->input('year')>= intval(date("Y")) &&  $request->input('year') <= 2040){
+                $competition->name = $request->input('name');
+                $competition->description = $request->input('description');
+                $competition->year = $request->input('year');
+                $competition->save();
+                return response()->json(['message' => 'Successful save', 'data' => $competition]);
+            }
+            return response()->json(['message' => 'Wrong year']);
+        }  
+
+        return response()->json(['message' => 'It is already exist']);
     }
 
     /**
@@ -108,6 +121,7 @@ class CompetitionsController extends Controller
         if (!$competition) {
             return response()->json(['message' => 'Not found'], 404);
         }
+        
         $competition->delete();
         return response()->json(['message' => 'Successful deletion', 'data' => $competition]);
     }
