@@ -71,6 +71,8 @@
                 competitionDiv.find('h4 a').text(response.data.name);
                 competitionDiv.find('h6').text(response.data.year);
                 competitionDiv.find('small i').text(response.data.description);
+                alert(response.message);
+
             },
             error: function(xhr) {
                 console.log(xhr.responseText);
@@ -87,9 +89,10 @@
             headers: {
                 'X-CSRF-TOKEN': '{{ csrf_token() }}',
             },
-            success: function(data) {
+            success: function(response) {
                 var element = document.getElementById('competition' + competitionId);
                 element.parentElement.parentElement.remove();
+                alert(response.message);
             },
             error: function(xhr, status, error) {
                 console.log(xhr.responseText, status, error);

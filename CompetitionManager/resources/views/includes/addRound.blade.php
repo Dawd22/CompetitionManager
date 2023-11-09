@@ -1,6 +1,6 @@
 <div class="container">
     <h2 class="text-center">Add round for the event</h2>
-    <form action="{{ route('round.store') }}" method="post" class="form">
+    <form action="{{ route('round.store') }}" method="post" class="form" id="addRound">
         @csrf
         <div class="form-group">
             <label for="title">Title of the round</label>
@@ -19,6 +19,6 @@
             <input type="text" name="location" placeholder="Location" class="form-control">
         </div>
         <input type="hidden" name="competition_id" value="{{ $competition_id }}">
-        <button type="submit" class="btn btn-primary d-block mx-auto">Create round</button>
+        <button class="btn btn-primary d-block mx-auto" onclick="addRound()">Create round</button>
     </form>
 </div>

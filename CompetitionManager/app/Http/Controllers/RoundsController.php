@@ -39,7 +39,8 @@ class RoundsController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return redirect()->back()->withErrors($validator);
+            return response()->json(['message' => 'Something went wrong']);
+
         }
 
         $round = new Round;
@@ -50,7 +51,8 @@ class RoundsController extends Controller
         $round->competition_id = $request->input('competition_id');
         $round->save();
 
-        return redirect()->back();
+        return response()->json(['message' => 'Successful save', 'data' => $round]);
+
     }
 
     /**

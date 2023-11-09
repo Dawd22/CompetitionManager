@@ -28,6 +28,7 @@
                         onclick="saveRound('{{ $round->id }}')">Save</button>
                 </form>
             </div>
+            <!-- <div id="result"></div> -->
             <br>
         @endforeach
         @include('includes.addRound', ['competition_id' => $competition->id])
@@ -66,8 +67,10 @@
                 $('#editRound' + roundId + ' input[name="location"]').val(response.data.location);
                 var roundDiv = $('#round' + roundId);
                 roundDiv.find('h4 a').text(response.data.round_name);
-                roundDiv.find('h6').html('Kezdete: <b>' + response.data.beginning + '</b>, Vége <b>' + response.data.end + '</b>');
+                roundDiv.find('h6').html('Kezdete: <b>' + response.data.beginning + '</b>, Vége <b>' +
+                    response.data.end + '</b>');
                 roundDiv.find('small i').text(response.data.location);
+                alert(response.message);
             },
             error: function(xhr) {
                 console.log(xhr.responseText);
@@ -84,12 +87,58 @@
             headers: {
                 'X-CSRF-TOKEN': '{{ csrf_token() }}',
             },
-            success: function(data) {
+            success: function(response) {
                 var element = document.getElementById('round' + roundId);
                 element.parentElement.parentElement.remove();
+                alert(response.message);
             },
             error: function(xhr, status, error) {
                 console.log(xhr.responseText, status, error);
+            }
+        });
+    }
+
+    function addRound() {
+        event.preventDefault();
+        var formData = $('#addRound').serialize();
+        $.ajax({
+            type: 'POST',
+            url: '/round',
+            data: formData,
+            async: true,
+            success: function(response) {
+                alert(response.message);
+                /*
+                $('#editRound' + response.data.round_id + ' input[name="round_name"]').val(response.data
+                    .round_name);
+                $('#editRound' + response.data.round_id + ' input[name="beginning"]').val(response.data
+                    .beginning);
+                $('#editRound' + response.data.round_id + ' input[name="end"]').val(response.data.end);
+                $('#editRound' + response.data.round_id + ' input[name="location"]').val(response.data
+                    .location);
+                $('#result').html(response);
+                var newRoundDiv = document.createElement("div");
+                newRoundDiv.className = "card";
+
+                var cardBodyDiv = document.createElement("div");
+                cardBodyDiv.className = "card-body";
+
+                newRoundDiv.appendChild(cardBodyDiv);
+
+                cardBodyDiv.innerHTML = `
+                    <h4><a href='/round/${response.data.round_id}'>${response.data.round_name}</a></h4>
+                    <h6>Kezdete: <b>${response.data.beginning}</b>, Vége: <b>${response.data.end}</b></h6>
+                    <small><i>${response.data.location}</i></small>
+                    <div class="d-flex justify-content-between">
+                        <button class="btn btn-primary" onclick="showRoundForm('${response.data.round_id}')">Edit</button>
+                        <button class="btn btn-danger" onclick="DeleteRound('${response.data.round_id}')">Delete</button>
+                    </div>`;
+
+                var resultDiv = document.getElementById('result');
+                resultDiv.appendChild(newRoundDiv);*/
+            },
+            error: function(xhr) {
+                console.log(xhr.responseText);
             }
         });
     }
