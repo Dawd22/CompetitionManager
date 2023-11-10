@@ -12,7 +12,7 @@
                         <small> <i>{{ $round->location }}</i></small>
                         <div class="d-flex justify-content-between">
                             <button class="btn btn-primary " onclick="showRoundForm('{{ $round->id }}')">Edit</button>
-                            <button class="btn btn-danger " onclick="DeleteRound('{{ $round->id }}')">Delete</button>
+                            <button class="btn btn-danger " onclick="deleteRound('{{ $round->id }}')">Delete</button>
                         </div>
                     </div>
                 </div>
@@ -78,7 +78,7 @@
         });
     }
 
-    function DeleteRound(roundId) {
+    function deleteRound(roundId) {
         event.preventDefault();
         $.ajax({
             type: 'DELETE',
@@ -92,8 +92,8 @@
                 element.parentElement.parentElement.remove();
                 alert(response.message);
             },
-            error: function(xhr, status, error) {
-                console.log(xhr.responseText, status, error);
+            error: function(xhr) {
+                console.log(xhr.responseText);
             }
         });
     }

@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Validator;
 use App\Models\Round;
 use App\Models\User;
 use App\Models\Competitor;
+use Illuminate\Support\Facades\DB;
 class RoundsController extends Controller
 {
     /**
@@ -40,19 +41,39 @@ class RoundsController extends Controller
 
         if ($validator->fails()) {
             return response()->json(['message' => 'Something went wrong']);
-
         }
 
-        $round = new Round;
-        $round->round_name = $request->input('title');
-        $round->beginning = $request->input('beginning');
-        $round->end = $request->input('end');
-        $round->location = $request->input('location');
-        $round->competition_id = $request->input('competition_id');
-        $round->save();
+        if($request->input('beginning') > $request->input('end')|| $request->input('beginning') < date( 'Y-m-d', strtotime( 'tomorrow' ) )){
+            return response()->json(['message' => 'Wrong date']);
+        }
+        if(Round::where(['beginning'=> $request->input('beginning'),'competition_id'=> $request->input('competition_id')])->get()->isEmpty())
+        {
+            $beginning = $request->input('beginning');
+            $end = $request->input('end');
+            $competitionId = $request->input('competition_id');
+            $results = DB::table('rounds')->where('competition_id', $competitionId)->where(function ($query) use ($beginning, $end) {
+                $query->whereBetween('beginning', [$beginning, $end])->orWhere(function ($query) use ($beginning, $end) {
+                        $query->where('beginning', '<', $beginning)->where('end', '>', $end);
+                    })->orWhere(function ($query) use ($beginning, $end) {
+                        $query->where('beginning', '>', $beginning)->where('end', '<', $end);
+                    })->orWhere(function ($query) use ($beginning) {
+                        $query->where('beginning', '<=', $beginning)
+                            ->where('end', '>=', $beginning);
+                    });})->get();
 
-        return response()->json(['message' => 'Successful save', 'data' => $round]);
-
+            if($results->isEmpty()){
+                $round = new Round;
+                $round->round_name = $request->input('title');
+                $round->beginning = $request->input('beginning');
+                $round->end = $request->input('end');
+                $round->location = $request->input('location');
+                $round->competition_id = $request->input('competition_id');
+                $round->save();
+                return response()->json(['message' => 'Successful save', 'data' => $round]);
+            }
+            return response()->json(['message' => 'Date is between in another date']);
+        }
+        return response()->json(['message' => 'There is a date what has this beginning']);
     }
 
     /**
@@ -92,10 +113,14 @@ class RoundsController extends Controller
             'location' => 'required',
             
         ]);
+        if ($validator->fails()) {
+            return response()->json(['message' => 'Something went wrong']);
+        }
+
         $round = Round::find($id);
 
         if (!$round) {
-            return response()->json(['message' => 'Not found'], 404);
+            return response()->json(['message' => 'Not found']);
         }
         
         $round->round_name = $request->input('round_name');
@@ -113,7 +138,7 @@ class RoundsController extends Controller
     {
         $round = Round::find($id);
         if (!$round) {
-            return response()->json(['message' => 'Not found'], 404);
+            return response()->json(['message' => 'Not found']);
         }
         $round->delete();
         return response()->json(['message' => 'Successful deletion', 'data' => $round]);

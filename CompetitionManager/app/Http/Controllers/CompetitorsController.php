@@ -97,7 +97,7 @@ class CompetitorsController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Request $request)
+    public function destroy(string $id)
     {
         //
     }
@@ -115,7 +115,7 @@ class CompetitorsController extends Controller
             
             return response()->json(['message' => 'Successful deletion']);
         } catch (Exception $e) {
-            return response()->json(['message' => 'Error during deletion'], 404);
+            return response()->json(['message' => 'Error during deletion','data' => $e]);
         }
     }
 }

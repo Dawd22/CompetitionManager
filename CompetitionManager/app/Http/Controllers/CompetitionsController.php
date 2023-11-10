@@ -85,6 +85,10 @@ class CompetitionsController extends Controller
             'year' => 'required',
             'description' => 'required',
         ]);
+        if ($validator->fails()) {
+            return response()->json(['message' => 'Something went wrong']);
+        }
+        
         $competition = Competition::find($id);
 
         if (!$competition) {

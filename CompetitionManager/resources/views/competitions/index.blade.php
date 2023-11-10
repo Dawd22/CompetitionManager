@@ -15,7 +15,7 @@
                         <div class="d-flex justify-content-between">
                             <button class="btn btn-primary " onclick="showForm('{{ $competition->id }}')">Edit</button>
                             <button class="btn btn-danger "
-                                onclick="DeleteCompetition('{{ $competition->id }}')">Delete</button>
+                                onclick="deleteCompetition('{{ $competition->id }}')">Delete</button>
                         </div>
                     </div>
                     <form id="editCompetition{{ $competition->id }}" style="display: none">
@@ -81,7 +81,7 @@
         });
     }
 
-    function DeleteCompetition(competitionId) {
+    function deleteCompetition(competitionId) {
         event.preventDefault();
         $.ajax({
             type: 'DELETE',
@@ -95,8 +95,8 @@
                 element.parentElement.parentElement.remove();
                 alert(response.message);
             },
-            error: function(xhr, status, error) {
-                console.log(xhr.responseText, status, error);
+            error: function(xhr) {
+                console.log(xhr.responseText);
             }
         });
     }
