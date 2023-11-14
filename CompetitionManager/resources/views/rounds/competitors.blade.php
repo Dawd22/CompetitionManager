@@ -1,6 +1,9 @@
 @extends('layouts.app')
 
 @section('content')
+
+@include('includes.toast')
+
     <h1 class="text-center">{{ $round->round_name }}</h1>
     <div id="competitorContainer">
         @if (count($competitors) > 0)
@@ -53,6 +56,16 @@
                 console.log(xhr.responseText, status, error);
             }
         });
+    }
+
+    function showToast(message) {
+        var toastElement = document.querySelector('.toast');
+        var toast = new bootstrap.Toast(toastElement);
+        document.getElementById('toastMessage').innerText = message;
+        toast.show();
+        setTimeout(function() {
+            toast.hide();
+        }, 4500);
     }
 
     function addCompetitor() {

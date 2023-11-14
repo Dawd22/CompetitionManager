@@ -1,6 +1,9 @@
 @extends('layouts.app')
 
 @section('content')
+
+@include('includes.toast')
+
     <div class="text-center">
         <h1>Competitions</h1>
     </div>
@@ -53,6 +56,16 @@
         }
     }
 
+    function showToast(message) {
+        var toastElement = document.querySelector('.toast');
+        var toast = new bootstrap.Toast(toastElement);
+        document.getElementById('toastMessage').innerText = message;
+        toast.show();
+        setTimeout(function() {
+            toast.hide();
+        }, 4500);
+    }
+
     function saveCompetition(competitionId) {
         event.preventDefault();
         var formData = $('#editCompetition' + competitionId).serialize();
@@ -63,7 +76,7 @@
             async: true,
             success: function(response) {
                 showForm(competitionId);
-                alert(response.message);
+                showToast(response.message);
                 if(response.message == "Successful save"){
                 $('#editCompetition' + competitionId + ' input[name="name"]').val(response.data.name);
                 $('#editCompetition' + competitionId + ' input[name="description"]').val(response.data
@@ -91,7 +104,7 @@
                 'X-CSRF-TOKEN': '{{ csrf_token() }}',
             },
             success: function(response) {
-                alert(response.message);
+                showToast(response.message);
                 if(response.message == "Successful deletion"){
                 var element = document.getElementById('competition' + competitionId);
                 element.parentElement.parentElement.remove();}

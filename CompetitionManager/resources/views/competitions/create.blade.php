@@ -1,6 +1,9 @@
 @extends('layouts.app')
 
 @section('content')
+
+@include('includes.toast')
+
     <div class="text-center">
         <h1>Create Competitions</h1>
     </div>
@@ -34,11 +37,22 @@
             data: formData,
             async: true,
             success: function(response) {
-                alert(response.message);
+                showToast(response.message);
             },
             error: function(xhr) {
                 console.log(xhr.responseText);
             }
         });
     }
+
+    function showToast(message) {
+        var toastElement = document.querySelector('.toast');
+        var toast = new bootstrap.Toast(toastElement);
+        document.getElementById('toastMessage').innerText = message;
+        toast.show();
+        setTimeout(function() {
+            toast.hide();
+        }, 4500);
+    }
+
 </script>

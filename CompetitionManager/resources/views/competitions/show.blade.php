@@ -1,6 +1,9 @@
 @extends('layouts.app')
 
 @section('content')
+
+@include('includes.toast')
+
     <h1 class="text-center">{{ $competition->name }}</h1>
     <h4 class="text-center">{{ $competition->year }}</h4>
     <div id="roundsContainer">
@@ -41,6 +44,7 @@
 @endsection
 
 
+
 <script type="text/javascript">
     function showRoundForm(roundId) {
         var round = document.getElementById(`round${roundId}`);
@@ -54,6 +58,16 @@
         }
     }
 
+    function showToast(message) {
+        var toastElement = document.querySelector('.toast');
+        var toast = new bootstrap.Toast(toastElement);
+        document.getElementById('toastMessage').innerText = message;
+        toast.show();
+        setTimeout(function() {
+            toast.hide();
+        }, 4500);
+    }
+
     function saveRound(roundId) {
         event.preventDefault();
         var formData = $('#editRound' + roundId).serialize();
@@ -64,7 +78,7 @@
             async: true,
             success: function(response) {
                 showRoundForm(roundId);
-                alert(response.message);
+                showToast(response.message);
                 if (response.message == "Successful update") {
                     $('#editRound' + roundId + ' input[name="round_name"]').val(response.data.round_name);
                     $('#editRound' + roundId + ' input[name="beginning"]').val(response.data.beginning);
@@ -93,7 +107,7 @@
                 'X-CSRF-TOKEN': '{{ csrf_token() }}',
             },
             success: function(response) {
-                alert(response.message);
+                showToast(response.message);
                 if (response.message == "Successful deletion") {
                     var element = document.getElementById('round' + roundId);
                     element.parentElement.parentElement.remove();
@@ -114,7 +128,7 @@
             data: formData,
             async: true,
             success: function(response) {
-                alert(response.message);
+                showToast(response.message);
                 if (response.message == "Successful save") {
                     var newRound = response.round;
                     var newCardHtml =
