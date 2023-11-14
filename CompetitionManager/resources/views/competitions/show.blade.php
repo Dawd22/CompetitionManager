@@ -137,7 +137,7 @@
                             <input type="text" name="location" value="${newRound.location}"class="form-control">
                             <input type="date" name="beginning" value="${newRound.beginning}" class="form-control">
                             <input type="date" name="end" value="${newRound.end}" class="form-control">
-                            <input type="hidden" name="competition_id" value="${newRound.id}">
+                            <input type="hidden" name="competition_id" value="${newRound.competition_id}">
                         </div>
                         <button type="submit" class="btn btn-primary d-block mx-auto"
                             onclick="saveRound('${newRound.id}')">Save</button>
