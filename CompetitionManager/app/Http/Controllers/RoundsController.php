@@ -72,7 +72,7 @@ class RoundsController extends Controller
                 $round->competition_id = $request->input('competition_id');
                 $round->save();
 
-                return response()->json(['message' => 'Successful save', 'data' => $round]);
+                return response()->json(['message' => 'Successful save', 'round' => $round]);
             }
 
             return response()->json(['message' => 'Date is between in another round']);

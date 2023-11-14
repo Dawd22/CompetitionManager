@@ -3,39 +3,40 @@
 @section('content')
     <h1 class="text-center">{{ $competition->name }}</h1>
     <h4 class="text-center">{{ $competition->year }}</h4>
-    @if (count($rounds) > 0)
-        @foreach ($rounds as $round)
-            <div class="card">
-                <div class="card-body">
-                    <div id="round{{ $round->id }}">
-                        <h4><a href='/round/{{ $round->id }}'>{{ $round->round_name }}</a></h4>
-                        <h6>Kezdete: <b>{{ $round->beginning }}</b>, Vége: <b>{{ $round->end }}</b></h6>
-                        <small> <i>{{ $round->location }}</i></small>
-                        <div class="d-flex justify-content-between">
-                            <button class="btn btn-primary " onclick="showRoundForm('{{ $round->id }}')">Edit</button>
-                            <button class="btn btn-danger " onclick="deleteRound('{{ $round->id }}')">Delete</button>
+    <div id="roundsContainer">
+        @if (count($rounds) > 0)
+            @foreach ($rounds as $round)
+                <div class="card">
+                    <div class="card-body">
+                        <div id="round{{ $round->id }}">
+                            <h4><a href='/round/{{ $round->id }}'>{{ $round->round_name }}</a></h4>
+                            <h6>Kezdete: <b>{{ $round->beginning }}</b>, Vége: <b>{{ $round->end }}</b></h6>
+                            <small> <i>{{ $round->location }}</i></small>
+                            <div class="d-flex justify-content-between">
+                                <button class="btn btn-primary " onclick="showRoundForm('{{ $round->id }}')">Edit</button>
+                                <button class="btn btn-danger " onclick="deleteRound('{{ $round->id }}')">Delete</button>
+                            </div>
                         </div>
                     </div>
+                    <form id="editRound{{ $round->id }}" style="display: none">
+                        @csrf
+                        <div class="form-group">
+                            <input type="text" name="round_name" value="{{ $round->round_name }}" class="form-control">
+                            <input type="text" name="location" value="{{ $round->location }}"class="form-control">
+                            <input type="date" name="beginning" value="{{ $round->beginning }}" class="form-control">
+                            <input type="date" name="end" value="{{ $round->end }}" class="form-control">
+                            <input type="hidden" name="competition_id" value="{{ $competition->id }}">
+                        </div>
+                        <button type="submit" class="btn btn-primary d-block mx-auto"
+                            onclick="saveRound('{{ $round->id }}')">Save</button>
+                    </form>
                 </div>
-                <form id="editRound{{ $round->id }}" style="display: none">
-                    @csrf
-                    <div class="form-group">
-                        <input type="text" name="round_name" value="{{ $round->round_name }}" class="form-control">
-                        <input type="text" name="location" value="{{ $round->location }}"class="form-control">
-                        <input type="date" name="beginning" value="{{ $round->beginning }}" class="form-control">
-                        <input type="date" name="end" value="{{ $round->end }}" class="form-control">
-                        <input type="hidden" name="competition_id" value="{{ $competition->id }}">
-                    </div>
-                    <button type="submit" class="btn btn-primary d-block mx-auto"
-                        onclick="saveRound('{{ $round->id }}')">Save</button>
-                </form>
-            </div>
-            <!-- <div id="result"></div> -->
-            <br>
-        @endforeach
-        @include('includes.addRound', ['competition_id' => $competition->id])
-    @else
-        @include('includes.addRound', ['competition_id' => $competition->id])
+                <br>
+            @endforeach
+    </div>
+    @include('includes.addRound', ['competition_id' => $competition->id])
+@else
+    @include('includes.addRound', ['competition_id' => $competition->id])
     @endif
 @endsection
 
@@ -64,16 +65,17 @@
             success: function(response) {
                 showRoundForm(roundId);
                 alert(response.message);
-                if(response.message == "Successful update"){
-                $('#editRound' + roundId + ' input[name="round_name"]').val(response.data.round_name);
-                $('#editRound' + roundId + ' input[name="beginning"]').val(response.data.beginning);
-                $('#editRound' + roundId + ' input[name="end"]').val(response.data.end);
-                $('#editRound' + roundId + ' input[name="location"]').val(response.data.location);
-                var roundDiv = $('#round' + roundId);
-                roundDiv.find('h4 a').text(response.data.round_name);
-                roundDiv.find('h6').html('Kezdete: <b>' + response.data.beginning + '</b>, Vége <b>' +
-                    response.data.end + '</b>');
-                roundDiv.find('small i').text(response.data.location);}
+                if (response.message == "Successful update") {
+                    $('#editRound' + roundId + ' input[name="round_name"]').val(response.data.round_name);
+                    $('#editRound' + roundId + ' input[name="beginning"]').val(response.data.beginning);
+                    $('#editRound' + roundId + ' input[name="end"]').val(response.data.end);
+                    $('#editRound' + roundId + ' input[name="location"]').val(response.data.location);
+                    var roundDiv = $('#round' + roundId);
+                    roundDiv.find('h4 a').text(response.data.round_name);
+                    roundDiv.find('h6').html('Kezdete: <b>' + response.data.beginning + '</b>, Vége <b>' +
+                        response.data.end + '</b>');
+                    roundDiv.find('small i').text(response.data.location);
+                }
             },
             error: function(xhr) {
                 console.log(xhr.responseText);
@@ -92,9 +94,10 @@
             },
             success: function(response) {
                 alert(response.message);
-                if(response.message == "Successful deletion"){
-                var element = document.getElementById('round' + roundId);
-                element.parentElement.parentElement.remove();}
+                if (response.message == "Successful deletion") {
+                    var element = document.getElementById('round' + roundId);
+                    element.parentElement.parentElement.remove();
+                }
             },
             error: function(xhr) {
                 console.log(xhr.responseText);
@@ -112,34 +115,38 @@
             async: true,
             success: function(response) {
                 alert(response.message);
-                /*
-                $('#editRound' + response.data.round_id + ' input[name="round_name"]').val(response.data
-                    .round_name);
-                $('#editRound' + response.data.round_id + ' input[name="beginning"]').val(response.data
-                    .beginning);
-                $('#editRound' + response.data.round_id + ' input[name="end"]').val(response.data.end);
-                $('#editRound' + response.data.round_id + ' input[name="location"]').val(response.data
-                    .location);
-                $('#result').html(response);
-                var newRoundDiv = document.createElement("div");
-                newRoundDiv.className = "card";
+                if (response.message == "Successful save") {
+                    var newRound = response.round;
+                    var newCardHtml =
+                        `<div class="card">
+                    <div class="card-body">
+                        <div id="round${newRound.id}">
+                            <h4><a href='/round/${newRound.id}'>${newRound.round_name}</a></h4>
+                            <h6>Kezdete: <b>${newRound.beginning}</b>, Vége: <b>${newRound.end}</b></h6>
+                            <small> <i>${newRound.location}</i></small>
+                            <div class="d-flex justify-content-between">
+                                <button class="btn btn-primary " onclick="showRoundForm('${newRound.id}')">Edit</button>
+                                <button class="btn btn-danger " onclick="deleteRound('${newRound.id}')">Delete</button>
+                            </div>
+                        </div>
+                    </div>
+                    <form id="editRound${newRound.id}" style="display: none">
+                        @csrf
+                        <div class="form-group">
+                            <input type="text" name="round_name" value="${newRound.round_name}" class="form-control">
+                            <input type="text" name="location" value="${newRound.location}"class="form-control">
+                            <input type="date" name="beginning" value="${newRound.beginning}" class="form-control">
+                            <input type="date" name="end" value="${newRound.end}" class="form-control">
+                            <input type="hidden" name="competition_id" value="${newRound.id}">
+                        </div>
+                        <button type="submit" class="btn btn-primary d-block mx-auto"
+                            onclick="saveRound('${newRound.id}')">Save</button>
+                    </form>
+                </div>
+                <br>`;
 
-                var cardBodyDiv = document.createElement("div");
-                cardBodyDiv.className = "card-body";
-
-                newRoundDiv.appendChild(cardBodyDiv);
-
-                cardBodyDiv.innerHTML = `
-                    <h4><a href='/round/${response.data.round_id}'>${response.data.round_name}</a></h4>
-                    <h6>Kezdete: <b>${response.data.beginning}</b>, Vége: <b>${response.data.end}</b></h6>
-                    <small><i>${response.data.location}</i></small>
-                    <div class="d-flex justify-content-between">
-                        <button class="btn btn-primary" onclick="showRoundForm('${response.data.round_id}')">Edit</button>
-                        <button class="btn btn-danger" onclick="DeleteRound('${response.data.round_id}')">Delete</button>
-                    </div>`;
-
-                var resultDiv = document.getElementById('result');
-                resultDiv.appendChild(newRoundDiv);*/
+                    $("#roundsContainer").append(newCardHtml);
+                }
             },
             error: function(xhr) {
                 console.log(xhr.responseText);
