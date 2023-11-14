@@ -3,8 +3,8 @@
     <form action="{{ route('round.store') }}" method="post" class="form" id="addRound">
         @csrf
         <div class="form-group">
-            <label for="title">Title of the round</label>
-            <input type="text" name="title" placeholder="Title" class="form-control">
+            <label for="round_name">Title of the round</label>
+            <input type="text" name="round_name" placeholder="Title" class="form-control">
         </div>
         <div class="form-group">
             <label for="beginning">Beginning of round</label>

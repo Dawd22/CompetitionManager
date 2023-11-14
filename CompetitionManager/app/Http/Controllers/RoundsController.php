@@ -7,7 +7,11 @@ use Illuminate\Support\Facades\Validator;
 use App\Models\Round;
 use App\Models\User;
 use App\Models\Competitor;
+use App\Models\Competition;
+
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
+
 class RoundsController extends Controller
 {
     /**
@@ -32,10 +36,10 @@ class RoundsController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'title' => 'required|string',
+            'round_name' => 'required|string',
             'beginning' => 'required',
             'end' => 'required',
-            'location' => 'required',
+            'location' => 'required|string',
             'competition_id' => 'required'
         ]);
 
@@ -43,38 +47,66 @@ class RoundsController extends Controller
             return response()->json(['message' => 'Something went wrong']);
         }
 
-        if($request->input('beginning') > $request->input('end')|| $request->input('beginning') < date( 'Y-m-d', strtotime( 'tomorrow' ) )){
+        $beginningDate = Carbon::parse($request->input('beginning'));
+        $competition = Competition::find($request->input('competition_id'));
+
+        if($request->input('beginning') > $request->input('end') 
+            || $request->input('beginning') < date( 'Y-m-d', strtotime( 'tomorrow' ) )
+            ||$competition->year > $beginningDate->year )
+        {
             return response()->json(['message' => 'Wrong date']);
         }
+
         if(Round::where(['beginning'=> $request->input('beginning'),'competition_id'=> $request->input('competition_id')])->get()->isEmpty())
         {
-            $beginning = $request->input('beginning');
-            $end = $request->input('end');
-            $competitionId = $request->input('competition_id');
-            $results = DB::table('rounds')->where('competition_id', $competitionId)->where(function ($query) use ($beginning, $end) {
-                $query->whereBetween('beginning', [$beginning, $end])->orWhere(function ($query) use ($beginning, $end) {
-                        $query->where('beginning', '<', $beginning)->where('end', '>', $end);
-                    })->orWhere(function ($query) use ($beginning, $end) {
-                        $query->where('beginning', '>', $beginning)->where('end', '<', $end);
-                    })->orWhere(function ($query) use ($beginning) {
-                        $query->where('beginning', '<=', $beginning)
-                            ->where('end', '>=', $beginning);
-                    });})->get();
+            $results = $this->getRoundsBetweenDate($request);
 
             if($results->isEmpty()){
+                
                 $round = new Round;
-                $round->round_name = $request->input('title');
+                $round->round_name = $request->input('round_name');
                 $round->beginning = $request->input('beginning');
                 $round->end = $request->input('end');
                 $round->location = $request->input('location');
                 $round->competition_id = $request->input('competition_id');
                 $round->save();
+
                 return response()->json(['message' => 'Successful save', 'data' => $round]);
             }
-            return response()->json(['message' => 'Date is between in another date']);
+
+            return response()->json(['message' => 'Date is between in another round']);
         }
-        return response()->json(['message' => 'There is a date what has this beginning']);
+        return response()->json(['message' => 'There is a round what has this beginning']);
     }
+
+    /**
+    * Retrieve rounds from the database that fall within a specified date range for a given competition.
+    */
+    public function getRoundsBetweenDate($request)
+    {
+        $beginning = $request->input('beginning');
+        $end = $request->input('end');
+        $competitionId = $request->input('competition_id');
+    
+        $results = DB::table('rounds')
+            ->where('competition_id', $competitionId)
+            ->where(function ($query) use ($beginning, $end) {
+                $query->whereBetween('beginning', [$beginning, $end])
+                    ->orWhere(function ($query) use ($beginning, $end) {
+                        $query->where('beginning', '<', $beginning)->where('end', '>', $end);
+                    })
+                    ->orWhere(function ($query) use ($beginning, $end) {
+                        $query->where('beginning', '>', $beginning)->where('end', '<', $end);
+                    })
+                    ->orWhere(function ($query) use ($beginning) {
+                        $query->where('beginning', '<=', $beginning)
+                            ->where('end', '>=', $beginning);
+                    });
+            })->get();
+    
+        return $results;
+    }
+    
 
     /**
      * Display the specified resource.
@@ -83,12 +115,10 @@ class RoundsController extends Controller
     {
         $competitors = Competitor::where('round_id','=',$id)->get();
         $round = Round::Find($id);
-        $users = [];
-        foreach ($competitors as $competitor) {
-            $user = User::find($competitor->user_id);
-            if($user != null){
-            array_push($users, $user);}
-        }
+        $users = User::join('competitors', 'users.id', '=', 'competitors.user_id')
+        ->where('competitors.round_id', '=', $id)
+        ->select('users.*')
+        ->get();
         
         return view('rounds.competitors')->with(['competitors' => $competitors, 'round' => $round,'users' => $users]);
     }
@@ -111,7 +141,7 @@ class RoundsController extends Controller
             'beginning' => 'required',
             'end' => 'required',
             'location' => 'required',
-            
+            'competition_id' => 'required'
         ]);
         if ($validator->fails()) {
             return response()->json(['message' => 'Something went wrong']);
@@ -123,12 +153,50 @@ class RoundsController extends Controller
             return response()->json(['message' => 'Not found']);
         }
         
-        $round->round_name = $request->input('round_name');
-        $round->beginning = $request->input('beginning');
-        $round->end = $request->input('end');
-        $round->location = $request->input('location');
-        $round->save();
-        return response()->json(['message' => 'Successful save', 'data' => $round]);
+        $beginningDate = Carbon::parse($request->input('beginning'));
+        $competition = Competition::find($request->input('competition_id'));
+
+        if($request->input('beginning') > $request->input('end') 
+            || $request->input('beginning') < date( 'Y-m-d', strtotime( 'tomorrow' ) )
+            ||$competition->year > $beginningDate->year )
+        {
+            return response()->json(['message' => 'Wrong date']);
+        }
+        
+        $roundHasBeginning = Round::where(['beginning'=> $request->input('beginning'),'competition_id'=> $request->input('competition_id')])->get();
+
+        if($roundHasBeginning->isEmpty() || $roundHasBeginning->first()->id == $round->id)
+        {
+            $results = $this->getRoundsBetweenDate($request);
+            
+            if($results->isEmpty()){
+                
+                $round->round_name = $request->input('round_name');
+                $round->beginning = $request->input('beginning');
+                $round->end = $request->input('end');
+                $round->location = $request->input('location');
+                $round->save();
+
+                return response()->json(['message' => 'Successful update', 'data' => $round]);
+            }
+            else{
+                foreach ($results as $result) {
+                    if($result->id != $round->id){
+                        return response()->json(['message' => 'Date is between in another round']);
+                    }
+                }
+                $round->round_name = $request->input('round_name');
+                $round->beginning = $request->input('beginning');
+                $round->end = $request->input('end');
+                $round->location = $request->input('location');
+                $round->save();
+
+                return response()->json(['message' => 'Successful update', 'data' => $round]);
+            }
+
+        }
+        return response()->json(['message' => 'There is a round what has this beginning']);
+        
     }
 
     /**

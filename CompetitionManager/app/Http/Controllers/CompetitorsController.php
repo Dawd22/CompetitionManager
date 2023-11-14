@@ -59,7 +59,7 @@ class CompetitorsController extends Controller
             if(Competitor::where(['user_id'=>  $user->first()->id, 'round_id' => $request->round_id])->get()->isEmpty()){
                 $competitor = new Competitor;
                 $competitor->round_id = $request->round_id;
-                $competitor->user_id = $user->id;;
+                $competitor->user_id = $user->first()->id;
                 $competitor->save();
                 return redirect()->back();
             }

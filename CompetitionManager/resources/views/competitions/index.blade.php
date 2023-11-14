@@ -91,9 +91,10 @@
                 'X-CSRF-TOKEN': '{{ csrf_token() }}',
             },
             success: function(response) {
-                var element = document.getElementById('competition' + competitionId);
-                element.parentElement.parentElement.remove();
                 alert(response.message);
+                if(response.message == "Successful deletion"){
+                var element = document.getElementById('competition' + competitionId);
+                element.parentElement.parentElement.remove();}
             },
             error: function(xhr) {
                 console.log(xhr.responseText);

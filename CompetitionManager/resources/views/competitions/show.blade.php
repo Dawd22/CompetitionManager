@@ -2,6 +2,7 @@
 
 @section('content')
     <h1 class="text-center">{{ $competition->name }}</h1>
+    <h4 class="text-center">{{ $competition->year }}</h4>
     @if (count($rounds) > 0)
         @foreach ($rounds as $round)
             <div class="card">
@@ -23,6 +24,7 @@
                         <input type="text" name="location" value="{{ $round->location }}"class="form-control">
                         <input type="date" name="beginning" value="{{ $round->beginning }}" class="form-control">
                         <input type="date" name="end" value="{{ $round->end }}" class="form-control">
+                        <input type="hidden" name="competition_id" value="{{ $competition->id }}">
                     </div>
                     <button type="submit" class="btn btn-primary d-block mx-auto"
                         onclick="saveRound('{{ $round->id }}')">Save</button>
@@ -61,6 +63,8 @@
             async: true,
             success: function(response) {
                 showRoundForm(roundId);
+                alert(response.message);
+                if(response.message == "Successful update"){
                 $('#editRound' + roundId + ' input[name="round_name"]').val(response.data.round_name);
                 $('#editRound' + roundId + ' input[name="beginning"]').val(response.data.beginning);
                 $('#editRound' + roundId + ' input[name="end"]').val(response.data.end);
@@ -69,8 +73,7 @@
                 roundDiv.find('h4 a').text(response.data.round_name);
                 roundDiv.find('h6').html('Kezdete: <b>' + response.data.beginning + '</b>, Vége <b>' +
                     response.data.end + '</b>');
-                roundDiv.find('small i').text(response.data.location);
-                alert(response.message);
+                roundDiv.find('small i').text(response.data.location);}
             },
             error: function(xhr) {
                 console.log(xhr.responseText);
@@ -88,9 +91,10 @@
                 'X-CSRF-TOKEN': '{{ csrf_token() }}',
             },
             success: function(response) {
-                var element = document.getElementById('round' + roundId);
-                element.parentElement.parentElement.remove();
                 alert(response.message);
+                if(response.message == "Successful deletion"){
+                var element = document.getElementById('round' + roundId);
+                element.parentElement.parentElement.remove();}
             },
             error: function(xhr) {
                 console.log(xhr.responseText);
