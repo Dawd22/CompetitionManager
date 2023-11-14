@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class Competition extends Model
 {
-    use HasFactory;
     protected $table = 'competitions';
     public $primaryKey = 'id';
     public $timestamps = true;

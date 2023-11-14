@@ -24,7 +24,9 @@
         <p>No participant found</p>
     @endif
 @endsection
+
 <script>
+
     function DeleteCompetitor(userId, roundId) {
         event.preventDefault();
         $.ajax({
@@ -47,4 +49,22 @@
             }
         });
     }
+
+    function addCompetitor() {
+        event.preventDefault();
+        var formData = $('#addCompetitor').serialize();
+        $.ajax({
+            type: 'POST',
+            url: '/competitor',
+            data: formData,
+            async: true,
+            success: function(response) {
+                alert(response.message);
+            },
+            error: function(xhr) {
+                console.log(xhr.responseText);
+            }
+        });
+    }
+
 </script>

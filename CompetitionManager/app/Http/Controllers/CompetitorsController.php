@@ -39,7 +39,7 @@ class CompetitorsController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return redirect()->back()->withErrors($validator);
+            return response()->json(['message' => 'Something went wrong']);
         }
 
         $user = User::where('email', '=', $request->email)->get();
@@ -53,7 +53,7 @@ class CompetitorsController extends Controller
             $competitor->round_id = $request->round_id;
             $competitor->user_id = $user->id;   
             $competitor->save();
-            return redirect()->back();
+            return response()->json(['message' => 'Successful save', 'data' => $competitor]);
         }
         else{
             if(Competitor::where(['user_id'=>  $user->first()->id, 'round_id' => $request->round_id])->get()->isEmpty()){
@@ -61,10 +61,10 @@ class CompetitorsController extends Controller
                 $competitor->round_id = $request->round_id;
                 $competitor->user_id = $user->first()->id;
                 $competitor->save();
-                return redirect()->back();
+                return response()->json(['message' => 'Successful save', 'data' => $competitor]);
             }
             else{
-                return redirect()->back()->withErrors('He is a participant');
+                return response()->json(['message' => 'He is a participant']);
             }
         }
 

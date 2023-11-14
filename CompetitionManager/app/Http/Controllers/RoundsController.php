@@ -48,11 +48,12 @@ class RoundsController extends Controller
         }
 
         $beginningDate = Carbon::parse($request->input('beginning'));
+        $endDate = Carbon::parse($request->input('beginning'));
         $competition = Competition::find($request->input('competition_id'));
 
         if($request->input('beginning') > $request->input('end') 
             || $request->input('beginning') < date( 'Y-m-d', strtotime( 'tomorrow' ) )
-            ||$competition->year > $beginningDate->year )
+            ||$competition->year > $beginningDate->year || $beginningDate->year > 2040 || $endDate->year > 2040)
         {
             return response()->json(['message' => 'Wrong date']);
         }
@@ -154,11 +155,12 @@ class RoundsController extends Controller
         }
         
         $beginningDate = Carbon::parse($request->input('beginning'));
+        $endDate = Carbon::parse($request->input('beginning'));
         $competition = Competition::find($request->input('competition_id'));
 
         if($request->input('beginning') > $request->input('end') 
             || $request->input('beginning') < date( 'Y-m-d', strtotime( 'tomorrow' ) )
-            ||$competition->year > $beginningDate->year )
+            ||$competition->year > $beginningDate->year || $beginningDate->year > 2040 || $endDate->year > 2040)
         {
             return response()->json(['message' => 'Wrong date']);
         }
