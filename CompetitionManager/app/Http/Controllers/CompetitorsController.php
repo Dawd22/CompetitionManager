@@ -33,9 +33,11 @@ class CompetitorsController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
+
             'name' => 'required|string',
             'email' => 'required',
             'round_id' => 'required'
+
         ]);
 
         if ($validator->fails()) {
@@ -45,6 +47,7 @@ class CompetitorsController extends Controller
         $user = User::where('email', '=', $request->email)->get();
 
         if($user->isEmpty()){
+
             $user = new User;
             $user->name = $request->name;
             $user->email = $request->email;
@@ -53,15 +56,18 @@ class CompetitorsController extends Controller
             $competitor->round_id = $request->round_id;
             $competitor->user_id = $user->id;   
             $competitor->save();
-            return response()->json(['message' => 'Successful save', 'data' => $competitor]);
+
+            return response()->json(['message' => 'Successful save', 'user' => $user, 'competitor' =>  $competitor]);
         }
         else{
             if(Competitor::where(['user_id'=>  $user->first()->id, 'round_id' => $request->round_id])->get()->isEmpty()){
+
                 $competitor = new Competitor;
                 $competitor->round_id = $request->round_id;
                 $competitor->user_id = $user->first()->id;
                 $competitor->save();
-                return response()->json(['message' => 'Successful save', 'data' => $competitor]);
+
+                return response()->json(['message' => 'Successful save', 'user' => $user, 'competitor' =>  $competitor]);
             }
             else{
                 return response()->json(['message' => 'He is a participant']);
