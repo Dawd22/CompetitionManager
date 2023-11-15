@@ -19,7 +19,7 @@ class RoundsController extends Controller
      */
     public function index()
     {
-        
+
     }
 
     /**
@@ -51,19 +51,19 @@ class RoundsController extends Controller
         $endDate = Carbon::parse($request->input('end'));
         $competition = Competition::find($request->input('competition_id'));
 
-        if($request->input('beginning') > $request->input('end') 
-            || $request->input('beginning') < date( 'Y-m-d', strtotime( 'tomorrow' ) )
-            ||$competition->year > $beginningDate->year || $beginningDate->year > 2040 || $endDate->year > 2040)
-        {
+        if (
+            $request->input('beginning') > $request->input('end')
+            || $request->input('beginning') < date('Y-m-d', strtotime('tomorrow'))
+            || $competition->year > $beginningDate->year || $beginningDate->year > 2040 || $endDate->year > 2040
+        ) {
             return response()->json(['message' => 'Wrong date']);
         }
 
-        if(Round::where(['beginning'=> $request->input('beginning'),'competition_id'=> $request->input('competition_id')])->get()->isEmpty())
-        {
+        if (Round::where(['beginning' => $request->input('beginning'), 'competition_id' => $request->input('competition_id')])->get()->isEmpty()) {
             $results = $this->getRoundsBetweenDate($request);
 
-            if($results->isEmpty()){
-                
+            if ($results->isEmpty()) {
+
                 $round = new Round;
                 $round->round_name = $request->input('round_name');
                 $round->beginning = $request->input('beginning');
@@ -81,14 +81,14 @@ class RoundsController extends Controller
     }
 
     /**
-    * Retrieve rounds from the database that fall within a specified date range for a given competition.
-    */
+     * Retrieve rounds from the database that fall within a specified date range for a given competition.
+     */
     public function getRoundsBetweenDate($request)
     {
         $beginning = $request->input('beginning');
         $end = $request->input('end');
         $competitionId = $request->input('competition_id');
-    
+
         $results = DB::table('rounds')
             ->where('competition_id', $competitionId)
             ->where(function ($query) use ($beginning, $end) {
@@ -104,24 +104,24 @@ class RoundsController extends Controller
                             ->where('end', '>=', $beginning);
                     });
             })->get();
-    
+
         return $results;
     }
-    
+
 
     /**
      * Display the specified resource.
      */
     public function show(string $id)
     {
-        $competitors = Competitor::where('round_id','=',$id)->get();
+        $competitors = Competitor::where('round_id', '=', $id)->get();
         $round = Round::Find($id);
         $users = User::join('competitors', 'users.id', '=', 'competitors.user_id')
-        ->where('competitors.round_id', '=', $id)
-        ->select('users.*')
-        ->get();
-        
-        return view('rounds.competitors')->with(['competitors' => $competitors, 'round' => $round,'users' => $users]);
+            ->where('competitors.round_id', '=', $id)
+            ->select('users.*')
+            ->get();
+
+        return view('rounds.competitors')->with(['competitors' => $competitors, 'round' => $round, 'users' => $users]);
     }
 
     /**
@@ -153,26 +153,26 @@ class RoundsController extends Controller
         if (!$round) {
             return response()->json(['message' => 'Not found']);
         }
-        
+
         $beginningDate = Carbon::parse($request->input('beginning'));
         $endDate = Carbon::parse($request->input('end'));
         $competition = Competition::find($request->input('competition_id'));
 
-        if($request->input('beginning') > $request->input('end') 
-            || $request->input('beginning') < date( 'Y-m-d', strtotime( 'tomorrow' ) )
-            ||$competition->year > $beginningDate->year || $beginningDate->year > 2040 || $endDate->year > 2040)
-        {
+        if (
+            $request->input('beginning') > $request->input('end')
+            || $request->input('beginning') < date('Y-m-d', strtotime('tomorrow'))
+            || $competition->year > $beginningDate->year || $beginningDate->year > 2040 || $endDate->year > 2040
+        ) {
             return response()->json(['message' => 'Wrong date']);
         }
-        
-        $roundHasBeginning = Round::where(['beginning'=> $request->input('beginning'),'competition_id'=> $request->input('competition_id')])->get();
 
-        if($roundHasBeginning->isEmpty() || $roundHasBeginning->first()->id == $round->id)
-        {
+        $roundHasBeginning = Round::where(['beginning' => $request->input('beginning'), 'competition_id' => $request->input('competition_id')])->get();
+
+        if ($roundHasBeginning->isEmpty() || $roundHasBeginning->first()->id == $round->id) {
             $results = $this->getRoundsBetweenDate($request);
-            
-            if($results->isEmpty()){
-                
+
+            if ($results->isEmpty()) {
+
                 $round->round_name = $request->input('round_name');
                 $round->beginning = $request->input('beginning');
                 $round->end = $request->input('end');
@@ -180,10 +180,9 @@ class RoundsController extends Controller
                 $round->save();
 
                 return response()->json(['message' => 'Successful update', 'data' => $round]);
-            }
-            else{
+            } else {
                 foreach ($results as $result) {
-                    if($result->id != $round->id){
+                    if ($result->id != $round->id) {
                         return response()->json(['message' => 'Date is between in another round']);
                     }
                 }
@@ -198,7 +197,7 @@ class RoundsController extends Controller
 
         }
         return response()->json(['message' => 'There is a round what has this beginning']);
-        
+
     }
 
     /**

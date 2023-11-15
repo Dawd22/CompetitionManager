@@ -17,8 +17,7 @@
                         <small> <i> {{ $competition->description }}</i></small>
                         <div class="d-flex justify-content-between">
                             <button class="btn btn-primary " onclick="showForm('{{ $competition->id }}')">Edit</button>
-                            <button class="btn btn-danger "
-                                onclick="deleteCompetition('{{ $competition->id }}')">Delete</button>
+                            <button class="btn btn-danger "  onclick="deleteCompetition('{{ $competition->id }}')">Delete</button>
                         </div>
                     </div>
                     <form id="editCompetition{{ $competition->id }}" style="display: none">
@@ -29,12 +28,9 @@
                                 class="form-control">
                             <input type="number" name="year" value="{{ $competition->year }}" class="form-control">
                         </div>
-                        <button type="submit" class="btn btn-primary d-block mx-auto"
-                            onclick="saveCompetition('{{ $competition->id }}')">Save</button>
-                        <button type="submit" class="btn btn-warning d-block mx-auto"
-                            onclick="showForm('{{ $competition->id }}')">Cancel</button>
+                        <button type="submit" class="btn btn-primary d-block mx-auto" onclick="saveCompetition('{{ $competition->id }}')">Save</button>
+                        <button type="submit" class="btn btn-warning d-block mx-auto" onclick="showForm('{{ $competition->id }}')">Cancel</button>
                     </form>
-
                 </div>
             </div>
             <br>
@@ -78,9 +74,11 @@
             data: formData,
             async: true,
             success: function(response) {
+
                 showForm(competitionId);
                 showToast(response.message);
                 if (response.message == "Successful save") {
+
                     $('#editCompetition' + competitionId + ' input[name="name"]').val(response.data.name);
                     $('#editCompetition' + competitionId + ' input[name="description"]').val(response.data
                         .description);

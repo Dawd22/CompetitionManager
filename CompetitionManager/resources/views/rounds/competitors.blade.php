@@ -30,7 +30,7 @@
     @endif
 @endsection
 
-<script>
+<script type="text/javascript">
     function DeleteCompetitor(userId, roundId) {
         event.preventDefault();
         $.ajax({
@@ -104,4 +104,5 @@
             }
         });
     }
+
 </script>

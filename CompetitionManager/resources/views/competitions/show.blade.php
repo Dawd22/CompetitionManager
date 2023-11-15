@@ -30,10 +30,8 @@
                             <input type="date" name="end" value="{{ $round->end }}" class="form-control">
                             <input type="hidden" name="competition_id" value="{{ $competition->id }}">
                         </div>
-                        <button type="submit" class="btn btn-primary d-block mx-auto"
-                            onclick="saveRound('{{ $round->id }}')">Save</button>
-                            <button type="submit" class="btn btn-warning d-block mx-auto"
-                            onclick="showRoundForm('{{ $round->id }}')">Cancel</button>
+                        <button type="submit" class="btn btn-primary d-block mx-auto" onclick="saveRound('{{ $round->id }}')">Save</button>
+                        <button type="submit" class="btn btn-warning d-block mx-auto" onclick="showRoundForm('{{ $round->id }}')">Cancel</button>
                     </form>
                 </div>
                 <br>

@@ -6,8 +6,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\User;
 use App\Models\Competitor;
-use App\Models\Round;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Database\QueryException;
 
 class CompetitorsController extends Controller
 {
@@ -46,7 +46,7 @@ class CompetitorsController extends Controller
 
         $user = User::where('email', $request->email)->get();
 
-        if($user->isEmpty()){
+        if ($user->isEmpty()) {
 
             $user = new User;
             $user->name = $request->name;
@@ -55,22 +55,21 @@ class CompetitorsController extends Controller
 
             $competitor = new Competitor;
             $competitor->round_id = $request->round_id;
-            $competitor->user_id = $user->id;   
+            $competitor->user_id = $user->id;
             $competitor->save();
 
-            return response()->json(['message' => 'Successful save', 'user' => $user, 'competitor' =>  $competitor]);
-        }
-        else{
-            if(Competitor::where(['user_id'=>  $user->first()->id, 'round_id' => $request->round_id])->get()->isEmpty()){
-
+            return response()->json(['message' => 'Successful save', 'user' => $user, 'competitor' => $competitor]);
+        } else {
+            if($user->first()->name != $request->name){
+                return response()->json(['message'=> 'Wrong name for this email']);
+            }
+            if (Competitor::where(['user_id' => $user->first()->id, 'round_id' => $request->round_id])->get()->isEmpty()) {
                 $competitor = new Competitor;
                 $competitor->round_id = $request->round_id;
                 $competitor->user_id = $user->first()->id;
                 $competitor->save();
-                $user = User::where('email', $request->email)->first();
-                return response()->json(['message' => 'Successful save', 'user' => $user, 'competitor' =>  $competitor]);
-            }
-            else{
+                return response()->json(['message' => 'Successful save', 'user' => $user->first(), 'competitor' => $competitor]);
+            } else {
                 return response()->json(['message' => 'He is a participant']);
             }
         }
@@ -113,16 +112,16 @@ class CompetitorsController extends Controller
     {
         $user_id = $request->input('user_id');
         $round_id = $request->input('round_id');
-    
+
         try {
             DB::table('competitors')
                 ->where('user_id', $user_id)
                 ->where('round_id', $round_id)
                 ->delete();
-            
+
             return response()->json(['message' => 'Successful deletion']);
-        } catch (Exception $e) {
-            return response()->json(['message' => 'Error during deletion','data' => $e]);
+        } catch (QueryException $e) {
+            return response()->json(['message' => 'Error during deletion', 'data' => $e]);
         }
     }
 }

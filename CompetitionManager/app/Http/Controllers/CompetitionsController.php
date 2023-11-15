@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Competition;
 use App\Models\Round;
 use Illuminate\Support\Facades\Validator;
+
 class CompetitionsController extends Controller
 {
     /**
@@ -13,8 +14,8 @@ class CompetitionsController extends Controller
      */
     public function index()
     {
-        $competitions = Competition::orderBy('year','desc')->paginate(4);
-        return view('competitions.index')->with('competitions',$competitions);
+        $competitions = Competition::orderBy('year', 'desc')->paginate(4);
+        return view('competitions.index')->with('competitions', $competitions);
     }
 
     /**
@@ -40,16 +41,16 @@ class CompetitionsController extends Controller
             return response()->json(['message' => 'Something went wrong']);
         }
 
-        if(Competition::where(['name'=> $request->input('name'), 'year'=> $request->input('year')])->get()->isEmpty()){
+        if (Competition::where(['name' => $request->input('name'), 'year' => $request->input('year')])->get()->isEmpty()) {
             $competition = new Competition;
             $competition->year = $request->input('year');
 
-            if($competition->year >= intval(date("Y")) && $competition->year <= 2040){
-            $competition->name = $request->input('name');
+            if ($competition->year >= intval(date("Y")) && $competition->year <= 2040) {
+                $competition->name = $request->input('name');
                 $competition->description = $request->input('description');
                 $competition->save();
                 return response()->json(['message' => 'Successful save', 'data' => $competition]);
-                }
+            }
 
             return response()->json(['message' => 'Wrong year']);
         }
@@ -65,7 +66,7 @@ class CompetitionsController extends Controller
         $competition = Competition::Find($id);
         $rounds = Round::where('competition_id', $id)->get();
         return view('competitions.show')->with(['competition' => $competition, 'rounds' => $rounds]);
-    }   
+    }
 
     /**
      * Show the form for editing the specified resource.
@@ -88,22 +89,19 @@ class CompetitionsController extends Controller
         if ($validator->fails()) {
             return response()->json(['message' => 'Something went wrong']);
         }
-        
+
         $competition = Competition::find($id);
 
         if (!$competition) {
             return response()->json(['message' => 'Not found']);
         }
 
-        if($competition->name == $request->input('name') && $competition->year == $request->input('year'))
-        {
+        if ($competition->name == $request->input('name') && $competition->year == $request->input('year')) {
             $competition->description = $request->input('description');
             $competition->save();
             return response()->json(['message' => 'Successful save', 'data' => $competition]);
-        }
-
-        else if(Competition::where(['name'=> $request->input('name'), 'year' => $request->input('year')])->get()->isEmpty()){
-            if( $request->input('year')>= intval(date("Y")) &&  $request->input('year') <= 2040){
+        } else if (Competition::where(['name' => $request->input('name'), 'year' => $request->input('year')])->get()->isEmpty()) {
+            if ($request->input('year') >= intval(date("Y")) && $request->input('year') <= 2040) {
                 $competition->name = $request->input('name');
                 $competition->description = $request->input('description');
                 $competition->year = $request->input('year');
@@ -111,7 +109,7 @@ class CompetitionsController extends Controller
                 return response()->json(['message' => 'Successful save', 'data' => $competition]);
             }
             return response()->json(['message' => 'Wrong year']);
-        }  
+        }
 
         return response()->json(['message' => 'It is already exist']);
     }
@@ -125,7 +123,7 @@ class CompetitionsController extends Controller
         if (!$competition) {
             return response()->json(['message' => 'Not found'], 404);
         }
-        
+
         $competition->delete();
         return response()->json(['message' => 'Successful deletion', 'data' => $competition]);
     }
