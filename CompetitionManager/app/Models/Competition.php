@@ -22,7 +22,9 @@ class Competition extends Model
         parent::boot();
 
         static::deleting(function ($competition) {
-            $competition->rounds()->delete();
+            $competition->rounds->each(function ($round) {
+                $round->delete();
+            });
         });
     }
 }

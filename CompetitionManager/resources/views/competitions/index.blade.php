@@ -2,7 +2,7 @@
 
 @section('content')
 
-@include('includes.toast')
+    @include('includes.toast')
 
     <div class="text-center">
         <h1>Competitions</h1>
@@ -31,13 +31,15 @@
                         </div>
                         <button type="submit" class="btn btn-primary d-block mx-auto"
                             onclick="saveCompetition('{{ $competition->id }}')">Save</button>
+                        <button type="submit" class="btn btn-warning d-block mx-auto"
+                            onclick="showForm('{{ $competition->id }}')">Cancel</button>
                     </form>
 
                 </div>
             </div>
             <br>
         @endforeach
-        {{$competitions->links('pagination::bootstrap-4')}}
+        {{ $competitions->links('pagination::bootstrap-4') }}
     @else
         <p>No competitions found</p>
     @endif
@@ -45,6 +47,7 @@
 
 <script type="text/javascript">
     function showForm(competitionId) {
+        event.preventDefault();
         var competition = document.getElementById(`competition${competitionId}`);
         var form = document.getElementById(`editCompetition${competitionId}`);
         if (competition.style.display === "none") {
@@ -77,15 +80,16 @@
             success: function(response) {
                 showForm(competitionId);
                 showToast(response.message);
-                if(response.message == "Successful save"){
-                $('#editCompetition' + competitionId + ' input[name="name"]').val(response.data.name);
-                $('#editCompetition' + competitionId + ' input[name="description"]').val(response.data
-                    .description);
-                $('#editCompetition' + competitionId + ' input[name="year"]').val(response.data.year);
-                var competitionDiv = $('#competition' + competitionId);
-                competitionDiv.find('h4 a').text(response.data.name);
-                competitionDiv.find('h6').text(response.data.year);
-                competitionDiv.find('small i').text(response.data.description);}
+                if (response.message == "Successful save") {
+                    $('#editCompetition' + competitionId + ' input[name="name"]').val(response.data.name);
+                    $('#editCompetition' + competitionId + ' input[name="description"]').val(response.data
+                        .description);
+                    $('#editCompetition' + competitionId + ' input[name="year"]').val(response.data.year);
+                    var competitionDiv = $('#competition' + competitionId);
+                    competitionDiv.find('h4 a').text(response.data.name);
+                    competitionDiv.find('h6').text(response.data.year);
+                    competitionDiv.find('small i').text(response.data.description);
+                }
 
             },
             error: function(xhr) {
@@ -105,9 +109,10 @@
             },
             success: function(response) {
                 showToast(response.message);
-                if(response.message == "Successful deletion"){
-                var element = document.getElementById('competition' + competitionId);
-                element.parentElement.parentElement.remove();}
+                if (response.message == "Successful deletion") {
+                    var element = document.getElementById('competition' + competitionId);
+                    element.parentElement.parentElement.remove();
+                }
             },
             error: function(xhr) {
                 console.log(xhr.responseText);

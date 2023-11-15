@@ -44,7 +44,7 @@ class CompetitorsController extends Controller
             return response()->json(['message' => 'Something went wrong']);
         }
 
-        $user = User::where('email', '=', $request->email)->get();
+        $user = User::where('email', $request->email)->get();
 
         if($user->isEmpty()){
 
@@ -52,6 +52,7 @@ class CompetitorsController extends Controller
             $user->name = $request->name;
             $user->email = $request->email;
             $user->save();
+
             $competitor = new Competitor;
             $competitor->round_id = $request->round_id;
             $competitor->user_id = $user->id;   
@@ -66,7 +67,7 @@ class CompetitorsController extends Controller
                 $competitor->round_id = $request->round_id;
                 $competitor->user_id = $user->first()->id;
                 $competitor->save();
-
+                $user = User::where('email', $request->email)->first();
                 return response()->json(['message' => 'Successful save', 'user' => $user, 'competitor' =>  $competitor]);
             }
             else{

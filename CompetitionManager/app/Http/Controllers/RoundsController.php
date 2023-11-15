@@ -48,7 +48,7 @@ class RoundsController extends Controller
         }
 
         $beginningDate = Carbon::parse($request->input('beginning'));
-        $endDate = Carbon::parse($request->input('beginning'));
+        $endDate = Carbon::parse($request->input('end'));
         $competition = Competition::find($request->input('competition_id'));
 
         if($request->input('beginning') > $request->input('end') 
@@ -155,7 +155,7 @@ class RoundsController extends Controller
         }
         
         $beginningDate = Carbon::parse($request->input('beginning'));
-        $endDate = Carbon::parse($request->input('beginning'));
+        $endDate = Carbon::parse($request->input('end'));
         $competition = Competition::find($request->input('competition_id'));
 
         if($request->input('beginning') > $request->input('end') 

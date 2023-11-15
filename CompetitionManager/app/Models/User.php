@@ -10,9 +10,7 @@ use App\Models\Competitor;
 
 class User extends Authenticatable
 {
-
     use HasFactory;
-
     /**
      * The attributes that are mass assignable.
      *
@@ -24,18 +22,4 @@ class User extends Authenticatable
         'email',
     ];
 
-    protected static function boot()
-    {
-        parent::boot();
-
-        static::deleting(function ($user) {
-            $user->competitors()->delete();
-        });
-
-    }
-
-    public function competitors()
-    {
-        return $this->hasMany(Competitor::class);
-    }
 }

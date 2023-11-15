@@ -45,7 +45,7 @@
                 'X-CSRF-TOKEN': '{{ csrf_token() }}',
             },
             success: function(response) {
-                alert(response.message);
+                showToast(response.message);
                 if (response.message == "Successful deletion") {
                     var element = document.getElementById('round' + userId);
                     element.parentElement.parentElement.remove();
@@ -77,9 +77,8 @@
             data: formData,
             async: true,
             success: function(response) {
-                alert(response.message);
+                showToast(response.message);
                 if (response.message == "Successful save") {
-
                     var newUser = response.user;
                     var newCompetitor = response.competitor;
                     var newCardHtml =
@@ -96,8 +95,8 @@
                                 </div>
                             </div> 
                             <br>`;
-                    $('#noParticipant').remove();
                     $("#competitorContainer").append(newCardHtml);
+                    $('#noParticipant').remove();
                 }
             },
             error: function(xhr) {

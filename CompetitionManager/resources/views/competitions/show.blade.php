@@ -32,6 +32,8 @@
                         </div>
                         <button type="submit" class="btn btn-primary d-block mx-auto"
                             onclick="saveRound('{{ $round->id }}')">Save</button>
+                            <button type="submit" class="btn btn-warning d-block mx-auto"
+                            onclick="showRoundForm('{{ $round->id }}')">Cancel</button>
                     </form>
                 </div>
                 <br>
@@ -47,6 +49,7 @@
 
 <script type="text/javascript">
     function showRoundForm(roundId) {
+        event.preventDefault();
         var round = document.getElementById(`round${roundId}`);
         var form = document.getElementById(`editRound${roundId}`);
         if (round.style.display === "none") {
