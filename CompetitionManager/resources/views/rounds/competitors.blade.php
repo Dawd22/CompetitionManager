@@ -26,7 +26,7 @@
     @include('includes.addUser', ['round_id' => $round->id])
 @else
     @include('includes.addUser', ['round_id' => $round->id])
-    <p>No participant found</p>
+    <p id="noParticipant">No participant found</p>
     @endif
 @endsection
 
@@ -96,7 +96,7 @@
                                 </div>
                             </div> 
                             <br>`;
-
+                    $('#noParticipant').remove();
                     $("#competitorContainer").append(newCardHtml);
                 }
             },

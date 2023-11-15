@@ -2,7 +2,7 @@
 
 @section('content')
 
-@include('includes.toast')
+    @include('includes.toast')
 
     <h1 class="text-center">{{ $competition->name }}</h1>
     <h4 class="text-center">{{ $competition->year }}</h4>
@@ -132,32 +132,32 @@
                 if (response.message == "Successful save") {
                     var newRound = response.round;
                     var newCardHtml =
-                        `<div class="card">
-                    <div class="card-body">
-                        <div id="round${newRound.id}">
-                            <h4><a href='/round/${newRound.id}'>${newRound.round_name}</a></h4>
-                            <h6>Kezdete: <b>${newRound.beginning}</b>, Vége: <b>${newRound.end}</b></h6>
-                            <small> <i>${newRound.location}</i></small>
-                            <div class="d-flex justify-content-between">
-                                <button class="btn btn-primary " onclick="showRoundForm('${newRound.id}')">Edit</button>
-                                <button class="btn btn-danger " onclick="deleteRound('${newRound.id}')">Delete</button>
+                    `<div class="card">
+                        <div class="card-body">
+                            <div id="round${newRound.id}">
+                                <h4><a href='/round/${newRound.id}'>${newRound.round_name}</a></h4>
+                                <h6>Kezdete: <b>${newRound.beginning}</b>, Vége: <b>${newRound.end}</b></h6>
+                                <small> <i>${newRound.location}</i></small>
+                                <div class="d-flex justify-content-between">
+                                    <button class="btn btn-primary " onclick="showRoundForm('${newRound.id}')">Edit</button>
+                                    <button class="btn btn-danger " onclick="deleteRound('${newRound.id}')">Delete</button>
+                                </div>
                             </div>
                         </div>
+                        <form id="editRound${newRound.id}" style="display: none">
+                            @csrf
+                            <div class="form-group">
+                                <input type="text" name="round_name" value="${newRound.round_name}" class="form-control">
+                                <input type="text" name="location" value="${newRound.location}"class="form-control">
+                                <input type="date" name="beginning" value="${newRound.beginning}" class="form-control">
+                                <input type="date" name="end" value="${newRound.end}" class="form-control">
+                                <input type="hidden" name="competition_id" value="${newRound.competition_id}">
+                            </div>
+                            <button type="submit" class="btn btn-primary d-block mx-auto"
+                                onclick="saveRound('${newRound.id}')">Save</button>
+                        </form>
                     </div>
-                    <form id="editRound${newRound.id}" style="display: none">
-                        @csrf
-                        <div class="form-group">
-                            <input type="text" name="round_name" value="${newRound.round_name}" class="form-control">
-                            <input type="text" name="location" value="${newRound.location}"class="form-control">
-                            <input type="date" name="beginning" value="${newRound.beginning}" class="form-control">
-                            <input type="date" name="end" value="${newRound.end}" class="form-control">
-                            <input type="hidden" name="competition_id" value="${newRound.competition_id}">
-                        </div>
-                        <button type="submit" class="btn btn-primary d-block mx-auto"
-                            onclick="saveRound('${newRound.id}')">Save</button>
-                    </form>
-                </div>
-                <br>`;
+                    <br>`;
 
                     $("#roundsContainer").append(newCardHtml);
                 }

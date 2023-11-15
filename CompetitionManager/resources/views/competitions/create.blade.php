@@ -27,7 +27,7 @@
     </div>
 @endsection
 
-<script>
+<script type="text/javascript">
     function saveCompetition() {
         event.preventDefault();
         var formData = $('#addCompetition').serialize();

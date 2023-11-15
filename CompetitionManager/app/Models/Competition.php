@@ -8,7 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class Competition extends Model
 {
     protected $table = 'competitions';
-    public $primaryKey = 'id';
+    
+    protected $fillable = ['name', 'year', 'description'];
     public $timestamps = true;
 
     public function rounds()
