@@ -8,7 +8,7 @@ use App\Models\Round;
 use App\Models\User;
 use App\Models\Competitor;
 use App\Models\Competition;
-
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
@@ -114,14 +114,18 @@ class RoundsController extends Controller
      */
     public function show(string $id)
     {
-        $competitors = Competitor::where('round_id', '=', $id)->get();
-        $round = Round::Find($id);
-        $users = User::join('competitors', 'users.id', '=', 'competitors.user_id')
-            ->where('competitors.round_id', '=', $id)
-            ->select('users.*')
-            ->get();
-
-        return view('rounds.competitors')->with(['competitors' => $competitors, 'round' => $round, 'users' => $users]);
+        try {
+            $competitors = Competitor::where('round_id', '=', $id)->get();
+            $round = Round::findOrFail($id);
+            $users = User::join('competitors', 'users.id', '=', 'competitors.user_id')
+                ->where('competitors.round_id', '=', $id)
+                ->select('users.*')
+                ->get();
+    
+            return view('rounds.competitors')->with(['competitors' => $competitors, 'round' => $round, 'users' => $users]);
+        } catch (ModelNotFoundException $e) {
+            abort(404);
+        }
     }
 
     /**

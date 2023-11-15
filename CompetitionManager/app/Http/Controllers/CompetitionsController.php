@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Competition;
 use App\Models\Round;
 use Illuminate\Support\Facades\Validator;
-
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 class CompetitionsController extends Controller
 {
     /**
@@ -63,9 +63,14 @@ class CompetitionsController extends Controller
      */
     public function show(string $id)
     {
-        $competition = Competition::Find($id);
-        $rounds = Round::where('competition_id', $id)->get();
-        return view('competitions.show')->with(['competition' => $competition, 'rounds' => $rounds]);
+        try {
+            $competition = Competition::findOrFail($id);
+            $rounds = Round::where('competition_id', $id)->get();
+    
+            return view('competitions.show')->with(['competition' => $competition, 'rounds' => $rounds]);
+        } catch (ModelNotFoundException $e) {
+            abort(404);
+        }
     }
 
     /**

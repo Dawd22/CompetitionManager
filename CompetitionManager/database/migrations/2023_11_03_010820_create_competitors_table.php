@@ -14,7 +14,7 @@ return new class extends Migration {
             $table->charset = 'utf8';
             $table->collation = 'utf8_unicode_ci';
             $table->foreignId('user_id')->constrained('users');
-            $table->foreign('round_id')->references('id')->on('rounds')->onDelete('cascade');
+            $table->foreignId('round_id')->constrained('rounds');   
             $table->timestamps();
         });
     }

@@ -154,8 +154,8 @@
                                 <input type="date" name="end" value="${newRound.end}" class="form-control">
                                 <input type="hidden" name="competition_id" value="${newRound.competition_id}">
                             </div>
-                            <button type="submit" class="btn btn-primary d-block mx-auto"
-                                onclick="saveRound('${newRound.id}')">Save</button>
+                            <button type="submit" class="btn btn-primary d-block mx-auto" onclick="saveRound('${newRound.id}')">Save</button>
+                            <button type="submit" class="btn btn-warning d-block mx-auto" onclick="showRoundForm('${newRound.id}')">Cancel</button>
                         </form>
                     </div>
                     <br>`;
